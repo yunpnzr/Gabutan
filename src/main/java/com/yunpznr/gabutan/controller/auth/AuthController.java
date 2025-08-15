@@ -1,14 +1,13 @@
 package com.yunpznr.gabutan.controller.auth;
 
 import com.yunpznr.gabutan.model.WebResponse;
-import com.yunpznr.gabutan.model.user.RegisterRequest;
-import com.yunpznr.gabutan.model.user.RegisterResponse;
+import com.yunpznr.gabutan.model.user.register.RegisterRequest;
+import com.yunpznr.gabutan.model.user.register.RegisterResponse;
 import com.yunpznr.gabutan.service.AuthServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

@@ -13,6 +13,6 @@ import lombok.NoArgsConstructor;
 public class WebResponse<T> {
     private int statusCode;
     private String message;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    //@JsonInclude(JsonInclude.Include.NON_NULL)
     private T data;
 }

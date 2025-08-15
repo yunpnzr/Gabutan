@@ -1,4 +1,4 @@
-package com.yunpznr.gabutan.model.user;
+package com.yunpznr.gabutan.model.user.register;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,9 +11,11 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RegisterRequest {
+public class RegisterResponse {
+    private UUID id;
     private String username;
     private String name;
     private String email;
     private String password;
+    private boolean isValidated;
 }

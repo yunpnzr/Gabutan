@@ -15,10 +15,10 @@ public class SendEmailListener {
     @EventListener
     public void sendEmail(OnRegisteredEvent event) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(event.getUser().getEmail());
         message.setSubject("Kode Aktivasi");
-        //message.setText("Kode aktivasimu adalah " + event.getUser().getToken());
         message.setText("Kode aktivasimu adalah " + event.getUser().getOtp());
+
+        message.setTo(event.getUser().getEmail());
         mailSender.send(message);
     }
 }

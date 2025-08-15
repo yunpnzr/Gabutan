@@ -1,5 +1,6 @@
 package com.yunpznr.gabutan.entity;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 public class Otp {
     @Id
     private String email;
+    @NotBlank(message = "OTP tidak boleh kosong")
     private String otp;
     @TimeToLive(unit = TimeUnit.MINUTES)
     private long lifeTime = 10;
