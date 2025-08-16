@@ -51,7 +51,7 @@ public class AuthServiceImpl implements AuthService {
         String plainPassword = registerRequest.getPassword();
         String pwHash = BCrypt.hashpw(plainPassword, BCrypt.gensalt());
         user.setPassword(pwHash);
-        user.setValidated(true);
+        user.setValidated(false);
 
         validator.validate(user);
 

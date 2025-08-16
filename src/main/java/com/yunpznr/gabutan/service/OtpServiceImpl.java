@@ -7,6 +7,7 @@ import com.yunpznr.gabutan.model.user.otp.OtpResponse;
 import com.yunpznr.gabutan.repository.AuthRepository;
 import com.yunpznr.gabutan.repository.OtpRepository;
 import com.yunpznr.gabutan.utils.CustomValidation;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,11 @@ public class OtpServiceImpl implements OtpService {
     @Override
     public void sendOtp(String email) {
         String otp = String.format("%06d", (int) (Math.random() * 1000000));
-        Otp build = Otp.builder().email(email).otp(otp).build();
+        Otp build = Otp.builder()
+                .email(email)
+                .otp(otp)
+                .lifeTime(10L)
+                .build();
         otpRepository.save(build);
 
         //kirim email
@@ -40,12 +45,18 @@ public class OtpServiceImpl implements OtpService {
     }
 
     //verifikasi otp
+    @Transactional
     @Override
     public OtpResponse verifyOtp(String email, String otp) {
         validation.validate(email);
 
         Otp savedOtp = otpRepository.findById(email)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "OTP tidak ditemukan"));
+
+        // Debug
+        System.out.println("Saved OTP (Integer): " + savedOtp.getOtp());
+        System.out.println("Input OTP (Integer): " + otp);
+        System.out.println("Are equal: " + savedOtp.getOtp().equals(otp));
 
         if (!savedOtp.getOtp().equals(otp)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "OTP tidak sesuai");

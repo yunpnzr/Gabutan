@@ -1,6 +1,7 @@
 package com.yunpznr.gabutan.controller.auth;
 
 import com.yunpznr.gabutan.model.WebResponse;
+import com.yunpznr.gabutan.model.user.otp.OtpRequest;
 import com.yunpznr.gabutan.model.user.otp.OtpResponse;
 import com.yunpznr.gabutan.service.OtpService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +22,8 @@ public class OtpController {
             consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<WebResponse<OtpResponse>> verifyOtp(@PathVariable(value = "email") String email,
-                                                              @RequestBody String otp) {
-        OtpResponse b = otpService.verifyOtp(email, otp);
+                                                              @RequestBody OtpRequest otp) {
+        OtpResponse b = otpService.verifyOtp(email, otp.getOtp());
 
         return ResponseEntity.status(200).body(
                 WebResponse.<OtpResponse>builder()
