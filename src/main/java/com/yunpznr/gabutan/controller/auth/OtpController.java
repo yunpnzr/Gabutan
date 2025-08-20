@@ -33,4 +33,19 @@ public class OtpController {
                         .build()
         );
     }
+
+    @PostMapping(path = "/resend/{email}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<WebResponse<OtpResponse>> resendOtp(@PathVariable(value = "email") String email) {
+        OtpResponse b = otpService.resendOtp(email);
+
+        return ResponseEntity.status(200).body(
+                WebResponse.<OtpResponse>builder()
+                        .statusCode(200)
+                        .message("Success resend otp")
+                        .data(b)
+                        .build()
+        );
+    }
 }
