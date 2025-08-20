@@ -94,7 +94,7 @@ public class OtpServiceImpl implements OtpService {
         }
 
         User emailStatus = authRepository.findByEmail(email)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email tidak ditemukan"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email tidak ditemukan..."));
 
         emailStatus.setValidated(true);
 
