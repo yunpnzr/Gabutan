@@ -1,5 +1,6 @@
 package com.yunpznr.gabutan.listener;
 
+import com.yunpznr.gabutan.utils.EmailSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.mail.SimpleMailMessage;
@@ -10,15 +11,10 @@ import org.springframework.stereotype.Component;
 public class SendEmailListener {
 
     @Autowired
-    private JavaMailSender mailSender;
+    private EmailSender emailSender;
 
     @EventListener
-    public void sendEmail(OnRegisteredEvent event) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setSubject("Kode Aktivasi");
-        message.setText("Kode aktivasimu adalah " + event.getUser().getOtp());
-
-        message.setTo(event.getUser().getEmail());
-        mailSender.send(message);
+    public void emailListener(OnRegisteredEvent event) {
+        emailSender.sendEmail(event.getUser().getOtp(), event.getUser().getEmail());
     }
 }

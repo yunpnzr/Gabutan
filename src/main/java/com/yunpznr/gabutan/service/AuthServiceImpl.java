@@ -55,6 +55,10 @@ public class AuthServiceImpl implements AuthService {
 
         validator.validate(user);
 
+        if (authRepository.existsByEmail(user.getEmail())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email sudah digunakan");
+        }
+
         authRepository.save(user);
 
         if(!registerRequest.getName().isBlank() &&

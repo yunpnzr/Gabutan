@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.data.annotation.AccessType;
 
 import java.math.BigInteger;
@@ -23,6 +24,7 @@ public class User {
     @Id
     private UUID id;
 
+    //@UniqueElements(message = "Username tidak tersedia")
     private String username;
 
     @NotBlank(message = "Nama gak boleh kosong")
@@ -30,6 +32,7 @@ public class User {
 
     @NotBlank(message = "Email tidak boleh kosong")
     @Email(message = "Format email tidak valid")
+    //@UniqueElements(message = "Email sudah digunakan")
     private String email;
 
     @NotBlank(message = "Password gak boleh kosong")

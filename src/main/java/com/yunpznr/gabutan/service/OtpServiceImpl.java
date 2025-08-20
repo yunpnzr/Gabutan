@@ -7,7 +7,10 @@ import com.yunpznr.gabutan.model.user.otp.OtpResponse;
 import com.yunpznr.gabutan.repository.AuthRepository;
 import com.yunpznr.gabutan.repository.OtpRepository;
 import com.yunpznr.gabutan.utils.CustomValidation;
+import com.yunpznr.gabutan.utils.EmailSender;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
@@ -17,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class OtpServiceImpl implements OtpService {
 
+    private static final Logger log = LoggerFactory.getLogger(OtpServiceImpl.class);
     @Autowired
     private OtpRepository otpRepository;
 
@@ -29,6 +33,9 @@ public class OtpServiceImpl implements OtpService {
     @Autowired
     private CustomValidation validation;
 
+    @Autowired
+    private EmailSender sender;
+
     //kirim email
     @Override
     public void sendOtp(String email) {
@@ -40,8 +47,37 @@ public class OtpServiceImpl implements OtpService {
                 .build();
         otpRepository.save(build);
 
-        //kirim email
         eventPublisher.publishEvent(new OnRegisteredEvent(build));
+    }
+
+    //kirim ulang otp
+    @Override
+    public OtpResponse resendOtp(String email) {
+        validation.validate(email);
+
+        String otp = String.format("%06d", (int) (Math.random() * 1000000));
+        Otp build = Otp.builder()
+                .email(email)
+                .otp(otp)
+                .lifeTime(10L)
+                .build();
+
+        try {
+            otpRepository.save(build);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Gagal tersimpan di database");
+        }
+
+        try {
+            sender.sendEmail(build.getOtp(), build.getEmail());
+        } catch (Exception e) {
+            log.info("Email gagal dikirim karena {} ", e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "OTP gagal dikirim");
+        }
+
+        return OtpResponse.builder()
+                .email(build.getEmail())
+                .build();
     }
 
     //verifikasi otp
@@ -53,11 +89,6 @@ public class OtpServiceImpl implements OtpService {
         Otp savedOtp = otpRepository.findById(email)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "OTP tidak ditemukan"));
 
-        // Debug
-        System.out.println("Saved OTP (Integer): " + savedOtp.getOtp());
-        System.out.println("Input OTP (Integer): " + otp);
-        System.out.println("Are equal: " + savedOtp.getOtp().equals(otp));
-
         if (!savedOtp.getOtp().equals(otp)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "OTP tidak sesuai");
         }
@@ -66,25 +97,15 @@ public class OtpServiceImpl implements OtpService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email tidak ditemukan"));
 
         emailStatus.setValidated(true);
-        authRepository.save(emailStatus);
+
+        try {
+            authRepository.save(emailStatus);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "OTP gagal terkirim");
+        }
 
         return OtpResponse.builder()
                 .email(savedOtp.getEmail())
                 .build();
     }
-
-    //verifikasi otp
-    /*@Override
-    public Optional<Boolean> verifyOtp(String email, String otp) {
-        validation.validate(email);
-
-        return otpRepository.findById(email).map(savedOtp -> {
-            boolean isValid = savedOtp.getOtp().equals(otp);
-            if (isValid) {
-                authRepository.findById(email).ifPresent(user -> user.setValidated(true));
-                otpRepository.delete(savedOtp);
-            }
-            return isValid;
-        });
-    }*/
 }

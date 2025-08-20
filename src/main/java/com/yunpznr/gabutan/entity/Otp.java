@@ -21,6 +21,6 @@ public class Otp {
     private String email;
     @NotBlank(message = "OTP tidak boleh kosong")
     private String otp;
-    @TimeToLive(unit = TimeUnit.MINUTES)
-    private long lifeTime = 10;
+    @TimeToLive
+    private long lifeTime = 600;
 }
