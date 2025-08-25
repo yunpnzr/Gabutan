@@ -3,13 +3,11 @@ package com.yunpznr.gabutan.controller.auth;
 import com.yunpznr.gabutan.model.WebResponse;
 import com.yunpznr.gabutan.model.user.otp.OtpRequest;
 import com.yunpznr.gabutan.model.user.otp.OtpResponse;
-import com.yunpznr.gabutan.service.OtpService;
+import com.yunpznr.gabutan.service.otp.OtpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("api/v1/otp")

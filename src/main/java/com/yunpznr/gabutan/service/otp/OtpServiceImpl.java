@@ -1,12 +1,12 @@
-package com.yunpznr.gabutan.service;
+package com.yunpznr.gabutan.service.otp;
 
 import com.yunpznr.gabutan.entity.Otp;
 import com.yunpznr.gabutan.entity.User;
 import com.yunpznr.gabutan.listener.OnRegisteredEvent;
 import com.yunpznr.gabutan.model.user.otp.OtpResponse;
-import com.yunpznr.gabutan.repository.AuthRepository;
-import com.yunpznr.gabutan.repository.OtpRepository;
-import com.yunpznr.gabutan.utils.CustomValidation;
+import com.yunpznr.gabutan.repository.auth.AuthRepository;
+import com.yunpznr.gabutan.repository.otp.OtpRepository;
+import com.yunpznr.gabutan.utils.validation.CustomValidation;
 import com.yunpznr.gabutan.utils.EmailSender;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;

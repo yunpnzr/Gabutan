@@ -1,10 +1,14 @@
-package com.yunpznr.gabutan.service;
+package com.yunpznr.gabutan.service.auth;
 
 import com.yunpznr.gabutan.entity.User;
+import com.yunpznr.gabutan.model.user.login.LoginRequest;
+import com.yunpznr.gabutan.model.user.login.LoginResponse;
 import com.yunpznr.gabutan.model.user.register.RegisterRequest;
 import com.yunpznr.gabutan.model.user.register.RegisterResponse;
-import com.yunpznr.gabutan.repository.AuthRepository;
-import com.yunpznr.gabutan.utils.CustomValidation;
+import com.yunpznr.gabutan.repository.auth.AuthRepository;
+import com.yunpznr.gabutan.repository.jwt.TokenRepository;
+import com.yunpznr.gabutan.service.otp.OtpService;
+import com.yunpznr.gabutan.utils.validation.CustomValidation;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -22,6 +26,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private AuthRepository authRepository;
+
+    @Autowired
+    private TokenRepository tokenRepository;
 
     @Autowired
     private OtpService otpService;
@@ -76,5 +83,38 @@ public class AuthServiceImpl implements AuthService {
                 .password(user.getPassword())
                 .isValidated(user.isValidated())
                 .build();
+    }
+
+    @Override
+    public LoginResponse login(LoginRequest loginRequest) {
+        validator.validate(loginRequest);
+
+        User user = authRepository.findByEmail(loginRequest.getEmail()).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email atau password salah")
+        );
+
+        if (!BCrypt.checkpw(loginRequest.getPassword(), user.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email atau password salah");
+        }
+
+        return LoginResponse.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .name(user.getName())
+                .email(user.getEmail())
+                .build();
+    }
+
+
+    @Transactional
+    @Override
+    public void deleteUser(String email) {
+        validator.validate(email);
+
+        int result = authRepository.deleteByEmail(email);
+
+        if (result == 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User gagal untuk dihapus");
+        }
     }
 }

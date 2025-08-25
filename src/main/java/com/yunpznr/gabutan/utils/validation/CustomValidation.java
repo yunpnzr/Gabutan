@@ -1,6 +1,5 @@
-package com.yunpznr.gabutan.utils;
+package com.yunpznr.gabutan.utils.validation;
 
-import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;

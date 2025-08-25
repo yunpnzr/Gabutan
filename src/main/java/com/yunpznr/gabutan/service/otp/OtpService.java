@@ -1,8 +1,6 @@
-package com.yunpznr.gabutan.service;
+package com.yunpznr.gabutan.service.otp;
 
 import com.yunpznr.gabutan.model.user.otp.OtpResponse;
-
-import java.util.Optional;
 
 public interface OtpService {
     void sendOtp(String email);
