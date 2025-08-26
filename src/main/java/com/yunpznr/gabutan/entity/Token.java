@@ -2,6 +2,7 @@ package com.yunpznr.gabutan.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,8 +21,10 @@ public class Token {
     private UUID id;
     @NotBlank
     private String token;
-    @NotBlank
+    @NotNull
     private Long expiredAt;
+    @Column(name = "is_revoked", nullable = false)
+    private boolean revoked;
 
     @OneToOne
     @JoinColumn(name = "id_user", referencedColumnName = "id")

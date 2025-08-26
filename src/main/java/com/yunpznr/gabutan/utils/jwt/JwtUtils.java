@@ -57,4 +57,9 @@ public class JwtUtils {
     public boolean isTokenExpired(String token) {
         return getClaims(token).getExpiration().before(new Date());
     }
+
+    //get expired token
+    public Long getExpiration(String token) {
+        return getClaims(token).getExpiration().getTime();
+    }
 }
