@@ -43,7 +43,6 @@ public class OtpServiceImpl implements OtpService {
         Otp build = Otp.builder()
                 .email(email)
                 .otp(otp)
-                .lifeTime(10L)
                 .build();
         otpRepository.save(build);
 
@@ -59,7 +58,6 @@ public class OtpServiceImpl implements OtpService {
         Otp build = Otp.builder()
                 .email(email)
                 .otp(otp)
-                .lifeTime(10L)
                 .build();
 
         try {
@@ -87,7 +85,7 @@ public class OtpServiceImpl implements OtpService {
         validation.validate(email);
 
         Otp savedOtp = otpRepository.findById(email)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "OTP tidak ditemukan"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "OTP kadaluwarsa"));
 
         if (!savedOtp.getOtp().equals(otp)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "OTP tidak sesuai");

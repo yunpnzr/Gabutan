@@ -8,7 +8,7 @@ import com.yunpznr.gabutan.model.user.token.RefreshTokenResponse;
 
 public interface AuthService {
     public RegisterResponse register(RegisterRequest registerRequest);
-    public LoginResponse login(LoginRequest loginRequest);
+    public LoginResponse login(LoginRequest loginRequest) throws InterruptedException;
     public RefreshTokenResponse refreshToken(String oldToken);
     public void deleteUser(String email);
 }

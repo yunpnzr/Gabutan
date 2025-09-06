@@ -5,6 +5,8 @@ import com.yunpznr.gabutan.model.user.login.LoginRequest;
 import com.yunpznr.gabutan.model.user.login.LoginResponse;
 import com.yunpznr.gabutan.model.user.register.RegisterRequest;
 import com.yunpznr.gabutan.model.user.register.RegisterResponse;
+import com.yunpznr.gabutan.model.user.token.RefreshTokenRequest;
+import com.yunpznr.gabutan.model.user.token.RefreshTokenResponse;
 import com.yunpznr.gabutan.service.auth.AuthServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -59,6 +61,23 @@ public class AuthController {
                 WebResponse.<LoginResponse>builder()
                         .statusCode(HttpStatus.OK.value())
                         .message("Success login")
+                        .data(login)
+                        .build()
+        );
+    }
+
+    @PostMapping(path = "/refresh",
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ResponseBody
+    public ResponseEntity<WebResponse<RefreshTokenResponse>> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
+        RefreshTokenResponse login = authService.refreshToken(refreshTokenRequest.getToken());
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                WebResponse.<RefreshTokenResponse>builder()
+                        .statusCode(HttpStatus.OK.value())
+                        .message("Success refresh token")
                         .data(login)
                         .build()
         );

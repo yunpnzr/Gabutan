@@ -4,11 +4,14 @@ import com.yunpznr.gabutan.model.WebResponse;
 import jakarta.validation.ConstraintViolationException;
 import org.eclipse.angus.mail.smtp.SMTPAddressFailedException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
+
+import org.springframework.security.core.AuthenticationException;
 
 @RestControllerAdvice
 public class ErrorController {
@@ -25,8 +28,8 @@ public class ErrorController {
         );
     }
 
-    @ExceptionHandler(HttpClientErrorException.Unauthorized.class)
-    public ResponseEntity<WebResponse<ErrorResponse>> unauthorizedException(HttpClientErrorException.Unauthorized e){
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<WebResponse<ErrorResponse>> unauthorizedException(BadCredentialsException e){
         return ResponseEntity.status(401).body(
                 WebResponse.<ErrorResponse>builder()
                         .statusCode(401)

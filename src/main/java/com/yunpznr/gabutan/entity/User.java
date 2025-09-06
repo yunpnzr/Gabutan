@@ -8,17 +8,24 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.data.annotation.AccessType;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.math.BigInteger;
+import java.time.Instant;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 @Entity
 @Table(name = "user", schema = "users")
 public class User implements UserDetails {
@@ -41,6 +48,14 @@ public class User implements UserDetails {
     @Column(name = "is_validated", nullable = false)
     private boolean validated;
 
+    @CreatedDate
+    @Column(name = "created_at")
+    private Instant createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private Instant updatedAt;
+
     @OneToOne(
             mappedBy = "user",
             cascade = CascadeType.ALL,
@@ -52,6 +67,10 @@ public class User implements UserDetails {
     public User(String email, String password) {
         this.email = email;
         this.password = password;
+    }
+
+    public String getUsernameUser(){
+        return username;
     }
 
     /**jwt**/

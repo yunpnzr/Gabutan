@@ -21,6 +21,7 @@ public class Otp {
     private String email;
     @NotBlank(message = "OTP tidak boleh kosong")
     private String otp;
+    @Builder.Default
     @TimeToLive
-    private long lifeTime = 600;
+    private long lifeTime = 60;
 }

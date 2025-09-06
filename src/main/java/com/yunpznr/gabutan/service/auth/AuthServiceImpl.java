@@ -22,6 +22,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -72,6 +73,10 @@ public class AuthServiceImpl implements AuthService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email sudah digunakan");
         }
 
+        if (authRepository.existsByUsername(user.getUsernameUser())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username sudah digunakan");
+        }
+
         authRepository.save(user);
 
         if(!registerRequest.getName().isBlank() &&
@@ -83,7 +88,7 @@ public class AuthServiceImpl implements AuthService {
 
         return RegisterResponse.builder()
                 .id(user.getId())
-                .username(user.getUsername())
+                .username(user.getUsernameUser())
                 .name(user.getName())
                 .email(user.getEmail())
                 .password(user.getPassword())
@@ -104,12 +109,18 @@ public class AuthServiceImpl implements AuthService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email atau password salah");
         }
 
+        Optional<Token> byUser = tokenRepository.findByUser(user);
+
         String generateToken = jwtUtils.generateToken(user.getEmail());
 
         Token token = new Token();
 
-        token.setUser(user);
-        token.setId(UUID.randomUUID());
+        if (byUser.isPresent()){
+            token = byUser.get();
+        } else {
+            token.setUser(user);
+            token.setId(UUID.randomUUID());
+        }
         token.setToken(generateToken);
         token.setExpiredAt(jwtUtils.getExpiration(generateToken));
         token.setRevoked(false);
@@ -130,18 +141,37 @@ public class AuthServiceImpl implements AuthService {
     public RefreshTokenResponse refreshToken(String oldToken) {
         validator.validate(oldToken);
 
-        return null;
+        Token token = tokenRepository.findByToken(oldToken).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token tidak ditemukan")
+        );
 
-        /*String email = jwtUtils.extractUsername(oldToken);
-        String newToken = jwtUtils.refreshToken(oldToken);
+        if (token.isRevoked()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token tidak ditemukan");
+        }
+
+        if (!jwtUtils.isTokenExpired(token.getToken())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token belum expired");
+        }
+
+        String emailToken = jwtUtils.getUsername(token.getToken());
+        String emailUser = token.getUser().getEmail();
+
+        if (!emailToken.equals(emailUser)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token tidak ditemukan");
+        }
+
+        String newToken = jwtUtils.generateToken(emailUser);
+
+        token.setToken(newToken);
+        token.setExpiredAt(jwtUtils.getExpiration(newToken));
+        tokenRepository.save(token);
 
         return RefreshTokenResponse.builder()
-                .email(email)
+                .email(emailUser)
                 .refreshToken(newToken)
-                .expirationDate(jwtUtils.getExpiration(newToken))
-                .build();*/
+                .expirationDate(jwtUtils.getExpiration(jwtUtils.generateToken(token.getUser().getEmail())))
+                .build();
     }
-
 
     @Transactional
     @Override
