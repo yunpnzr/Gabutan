@@ -24,7 +24,7 @@ public class JwtAuthEntryPoint implements AuthenticationEntryPoint {
 
         WebResponse<ErrorResponse> errorResponse = WebResponse.<ErrorResponse>builder()
                 .statusCode(401)
-                .message("Unauthorized")
+                .message("Unauthorized, " + authException.getMessage().toLowerCase())
                 .data(null)
                 .build();
 
