@@ -1,4 +1,4 @@
-package com.yunpznr.gabutan.controller;
+package com.yunpznr.gabutan.controller.error;
 
 import com.yunpznr.gabutan.model.WebResponse;
 import jakarta.validation.ConstraintViolationException;
@@ -8,10 +8,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
-
-import org.springframework.security.core.AuthenticationException;
 
 @RestControllerAdvice
 public class ErrorController {

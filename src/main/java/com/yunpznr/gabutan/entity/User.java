@@ -56,6 +56,9 @@ public class User implements UserDetails {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
+    @NotBlank(message = "Gender gak boleh kosong")
+    private String gender;
+
     @OneToOne(
             mappedBy = "user",
             cascade = CascadeType.ALL,

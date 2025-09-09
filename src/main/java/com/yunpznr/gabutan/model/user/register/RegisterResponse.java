@@ -18,4 +18,5 @@ public class RegisterResponse {
     private String email;
     private String password;
     private boolean isValidated;
+    private String gender;
 }

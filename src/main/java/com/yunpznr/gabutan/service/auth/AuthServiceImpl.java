@@ -2,6 +2,7 @@ package com.yunpznr.gabutan.service.auth;
 
 import com.yunpznr.gabutan.entity.Token;
 import com.yunpznr.gabutan.entity.User;
+import com.yunpznr.gabutan.model.user.GetUserResponse;
 import com.yunpznr.gabutan.model.user.login.LoginRequest;
 import com.yunpznr.gabutan.model.user.login.LoginResponse;
 import com.yunpznr.gabutan.model.user.register.RegisterRequest;
@@ -67,6 +68,16 @@ public class AuthServiceImpl implements AuthService {
         user.setPassword(pwHash);
         user.setValidated(false);
 
+        if (registerRequest.getGender() != null) {
+            if (registerRequest.getGender().equals("Laki-Laki") || registerRequest.getGender().equals("Perempuan")) {
+                user.setGender(registerRequest.getGender());
+            } else {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Gender salah input");
+            }
+        } else {
+            throw new IllegalArgumentException("Gender tidak boleh kosong");
+        }
+
         validator.validate(user);
 
         if (authRepository.existsByEmail(user.getEmail())) {
@@ -82,7 +93,8 @@ public class AuthServiceImpl implements AuthService {
         if(!registerRequest.getName().isBlank() &&
                 !registerRequest.getUsername().isBlank() &&
                 !registerRequest.getEmail().isBlank() &&
-                !registerRequest.getPassword().trim().isBlank()) {
+                !registerRequest.getPassword().trim().isBlank() &&
+                !registerRequest.getGender().isBlank()) {
             otpService.sendOtp(user.getEmail());
         }
 
@@ -92,6 +104,7 @@ public class AuthServiceImpl implements AuthService {
                 .name(user.getName())
                 .email(user.getEmail())
                 .password(user.getPassword())
+                .gender(user.getGender())
                 .isValidated(user.isValidated())
                 .build();
     }
@@ -170,6 +183,22 @@ public class AuthServiceImpl implements AuthService {
                 .email(emailUser)
                 .refreshToken(newToken)
                 .expirationDate(jwtUtils.getExpiration(jwtUtils.generateToken(token.getUser().getEmail())))
+                .build();
+    }
+
+    @Override
+    public GetUserResponse getUser(String email) {
+        validator.validate(email);
+
+        User user = authRepository.findFirstByEmail(email).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User tidak ditemukan"));
+
+        return GetUserResponse.builder()
+                .id(user.getId())
+                .username(user.getUsernameUser())
+                .name(user.getName())
+                .email(user.getEmail())
+                .createdAt(user.getCreatedAt())
                 .build();
     }
 
