@@ -36,19 +36,6 @@ public class AuthController {
         );
     }
 
-    @DeleteMapping(path = "/delete/{email}",
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public ResponseEntity<WebResponse<RegisterResponse>> deleteUser(@PathVariable(value = "email") String email) {
-        authService.deleteUser(email);
-        return ResponseEntity.status(200).body(
-                WebResponse.<RegisterResponse>builder()
-                        .statusCode(200)
-                        .message("Success delete user")
-                        .build()
-        );
-    }
-
     @PostMapping(path = "/login",
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.APPLICATION_JSON_VALUE

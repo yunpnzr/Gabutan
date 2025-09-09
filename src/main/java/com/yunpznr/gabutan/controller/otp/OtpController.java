@@ -1,4 +1,4 @@
-package com.yunpznr.gabutan.controller.auth;
+package com.yunpznr.gabutan.controller.otp;
 
 import com.yunpznr.gabutan.model.WebResponse;
 import com.yunpznr.gabutan.model.user.otp.OtpRequest;

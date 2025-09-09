@@ -207,6 +207,11 @@ public class AuthServiceImpl implements AuthService {
     public void deleteUser(String email) {
         validator.validate(email);
 
+        User user = authRepository.findByEmail(email).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User tidak ditemukan"));
+
+        tokenRepository.deleteByUser(user);
+
         int result = authRepository.deleteByEmail(email);
 
         if (result == 0) {

@@ -1,4 +1,4 @@
-package com.yunpznr.gabutan.controller.auth;
+package com.yunpznr.gabutan.controller.user;
 
 import com.yunpznr.gabutan.model.WebResponse;
 import com.yunpznr.gabutan.model.user.GetUserResponse;
@@ -6,10 +6,7 @@ import com.yunpznr.gabutan.service.auth.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/user")
@@ -27,6 +24,19 @@ public class UserController {
                         .statusCode(200)
                         .message("Success get data")
                         .data(user)
+                        .build()
+        );
+    }
+
+    @DeleteMapping(path = "/delete/{email}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<WebResponse<String>> deleteUser(@PathVariable(value = "email") String email) {
+        authService.deleteUser(email);
+        return ResponseEntity.status(200).body(
+                WebResponse.<String>builder()
+                        .statusCode(200)
+                        .message("Success delete user")
                         .build()
         );
     }
