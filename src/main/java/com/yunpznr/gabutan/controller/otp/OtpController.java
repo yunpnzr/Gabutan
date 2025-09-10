@@ -1,0 +1,49 @@
+package com.yunpznr.gabutan.controller.otp;
+
+import com.yunpznr.gabutan.model.WebResponse;
+import com.yunpznr.gabutan.model.auth.otp.OtpRequest;
+import com.yunpznr.gabutan.model.auth.otp.OtpResponse;
+import com.yunpznr.gabutan.service.otp.OtpService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("api/v1/otp")
+public class OtpController {
+    @Autowired
+    private OtpService otpService;
+
+    @PostMapping(path = "/verify/{email}",
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<WebResponse<OtpResponse>> verifyOtp(@PathVariable(value = "email") String email,
+                                                              @RequestBody OtpRequest otp) {
+        OtpResponse b = otpService.verifyOtp(email, otp.getOtp());
+
+        return ResponseEntity.status(200).body(
+                WebResponse.<OtpResponse>builder()
+                        .statusCode(200)
+                        .message("Success verify otp")
+                        .data(b)
+                        .build()
+        );
+    }
+
+    @PostMapping(path = "/resend/{email}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<WebResponse<OtpResponse>> resendOtp(@PathVariable(value = "email") String email) {
+        OtpResponse b = otpService.resendOtp(email);
+
+        return ResponseEntity.status(200).body(
+                WebResponse.<OtpResponse>builder()
+                        .statusCode(200)
+                        .message("Success resend otp")
+                        .data(b)
+                        .build()
+        );
+    }
+}
