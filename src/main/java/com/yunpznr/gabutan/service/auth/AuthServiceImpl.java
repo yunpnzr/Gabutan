@@ -2,13 +2,13 @@ package com.yunpznr.gabutan.service.auth;
 
 import com.yunpznr.gabutan.entity.Token;
 import com.yunpznr.gabutan.entity.User;
-import com.yunpznr.gabutan.model.user.GetUserResponse;
-import com.yunpznr.gabutan.model.user.login.LoginRequest;
-import com.yunpznr.gabutan.model.user.login.LoginResponse;
-import com.yunpznr.gabutan.model.user.register.RegisterRequest;
-import com.yunpznr.gabutan.model.user.register.RegisterResponse;
-import com.yunpznr.gabutan.model.user.token.RefreshTokenResponse;
-import com.yunpznr.gabutan.repository.auth.AuthRepository;
+import com.yunpznr.gabutan.model.user.get.GetUserResponse;
+import com.yunpznr.gabutan.model.auth.login.LoginRequest;
+import com.yunpznr.gabutan.model.auth.login.LoginResponse;
+import com.yunpznr.gabutan.model.auth.register.RegisterRequest;
+import com.yunpznr.gabutan.model.auth.register.RegisterResponse;
+import com.yunpznr.gabutan.model.auth.token.RefreshTokenResponse;
+import com.yunpznr.gabutan.repository.auth.UserRepository;
 import com.yunpznr.gabutan.repository.jwt.TokenRepository;
 import com.yunpznr.gabutan.service.otp.OtpService;
 import com.yunpznr.gabutan.utils.jwt.JwtUtils;
@@ -30,7 +30,7 @@ import java.util.UUID;
 public class AuthServiceImpl implements AuthService {
 
     @Autowired
-    private AuthRepository authRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private TokenRepository tokenRepository;
@@ -80,15 +80,15 @@ public class AuthServiceImpl implements AuthService {
 
         validator.validate(user);
 
-        if (authRepository.existsByEmail(user.getEmail())) {
+        if (userRepository.existsByEmail(user.getEmail())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email sudah digunakan");
         }
 
-        if (authRepository.existsByUsername(user.getUsernameUser())) {
+        if (userRepository.existsByUsername(user.getUsernameUser())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username sudah digunakan");
         }
 
-        authRepository.save(user);
+        userRepository.save(user);
 
         if(!registerRequest.getName().isBlank() &&
                 !registerRequest.getUsername().isBlank() &&
@@ -114,7 +114,7 @@ public class AuthServiceImpl implements AuthService {
     public LoginResponse login(LoginRequest loginRequest) {
         validator.validate(loginRequest);
 
-        User user = authRepository.findByEmail(loginRequest.getEmail()).orElseThrow(
+        User user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email atau password salah")
         );
 
@@ -184,38 +184,5 @@ public class AuthServiceImpl implements AuthService {
                 .refreshToken(newToken)
                 .expirationDate(jwtUtils.getExpiration(jwtUtils.generateToken(token.getUser().getEmail())))
                 .build();
-    }
-
-    @Override
-    public GetUserResponse getUser(String email) {
-        validator.validate(email);
-
-        User user = authRepository.findFirstByEmail(email).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User tidak ditemukan"));
-
-        return GetUserResponse.builder()
-                .id(user.getId())
-                .username(user.getUsernameUser())
-                .name(user.getName())
-                .email(user.getEmail())
-                .createdAt(user.getCreatedAt())
-                .build();
-    }
-
-    @Transactional
-    @Override
-    public void deleteUser(String email) {
-        validator.validate(email);
-
-        User user = authRepository.findByEmail(email).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User tidak ditemukan"));
-
-        tokenRepository.deleteByUser(user);
-
-        int result = authRepository.deleteByEmail(email);
-
-        if (result == 0) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User gagal untuk dihapus");
-        }
     }
 }

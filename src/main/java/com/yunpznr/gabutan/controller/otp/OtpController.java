@@ -1,8 +1,8 @@
 package com.yunpznr.gabutan.controller.otp;
 
 import com.yunpznr.gabutan.model.WebResponse;
-import com.yunpznr.gabutan.model.user.otp.OtpRequest;
-import com.yunpznr.gabutan.model.user.otp.OtpResponse;
+import com.yunpznr.gabutan.model.auth.otp.OtpRequest;
+import com.yunpznr.gabutan.model.auth.otp.OtpResponse;
 import com.yunpznr.gabutan.service.otp.OtpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

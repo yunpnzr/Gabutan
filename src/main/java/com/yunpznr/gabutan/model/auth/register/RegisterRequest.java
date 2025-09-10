@@ -1,4 +1,4 @@
-package com.yunpznr.gabutan.model.user.token;
+package com.yunpznr.gabutan.model.auth.register;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RefreshTokenResponse {
+public class RegisterRequest {
+    private String username;
+    private String name;
     private String email;
-    private String refreshToken;
-    private Long expirationDate;
+    private String password;
+    private String gender;
 }

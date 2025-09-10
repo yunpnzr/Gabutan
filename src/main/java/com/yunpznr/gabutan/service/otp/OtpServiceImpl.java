@@ -3,8 +3,8 @@ package com.yunpznr.gabutan.service.otp;
 import com.yunpznr.gabutan.entity.Otp;
 import com.yunpznr.gabutan.entity.User;
 import com.yunpznr.gabutan.listener.OnRegisteredEvent;
-import com.yunpznr.gabutan.model.user.otp.OtpResponse;
-import com.yunpznr.gabutan.repository.auth.AuthRepository;
+import com.yunpznr.gabutan.model.auth.otp.OtpResponse;
+import com.yunpznr.gabutan.repository.auth.UserRepository;
 import com.yunpznr.gabutan.repository.otp.OtpRepository;
 import com.yunpznr.gabutan.utils.validation.CustomValidation;
 import com.yunpznr.gabutan.utils.EmailSender;
@@ -25,7 +25,7 @@ public class OtpServiceImpl implements OtpService {
     private OtpRepository otpRepository;
 
     @Autowired
-    private AuthRepository authRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private ApplicationEventPublisher eventPublisher;
@@ -91,13 +91,13 @@ public class OtpServiceImpl implements OtpService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "OTP tidak sesuai");
         }
 
-        User emailStatus = authRepository.findByEmail(email)
+        User emailStatus = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email tidak ditemukan..."));
 
         emailStatus.setValidated(true);
 
         try {
-            authRepository.save(emailStatus);
+            userRepository.save(emailStatus);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "OTP gagal terkirim");
         }

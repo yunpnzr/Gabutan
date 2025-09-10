@@ -1,7 +1,7 @@
 package com.yunpznr.gabutan.utils;
 
 import com.yunpznr.gabutan.entity.User;
-import com.yunpznr.gabutan.repository.auth.AuthRepository;
+import com.yunpznr.gabutan.repository.auth.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -14,7 +14,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 public class UserArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Autowired
-    private AuthRepository authRepository;
+    private UserRepository userRepository;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {

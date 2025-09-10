@@ -1,4 +1,4 @@
-package com.yunpznr.gabutan.model.user.otp;
+package com.yunpznr.gabutan.model.auth.token;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class OtpResponse {
+public class RefreshTokenResponse {
     private String email;
+    private String refreshToken;
+    private Long expirationDate;
 }

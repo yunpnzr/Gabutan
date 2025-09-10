@@ -1,12 +1,12 @@
 package com.yunpznr.gabutan.controller.auth;
 
 import com.yunpznr.gabutan.model.WebResponse;
-import com.yunpznr.gabutan.model.user.login.LoginRequest;
-import com.yunpznr.gabutan.model.user.login.LoginResponse;
-import com.yunpznr.gabutan.model.user.register.RegisterRequest;
-import com.yunpznr.gabutan.model.user.register.RegisterResponse;
-import com.yunpznr.gabutan.model.user.token.RefreshTokenRequest;
-import com.yunpznr.gabutan.model.user.token.RefreshTokenResponse;
+import com.yunpznr.gabutan.model.auth.login.LoginRequest;
+import com.yunpznr.gabutan.model.auth.login.LoginResponse;
+import com.yunpznr.gabutan.model.auth.register.RegisterRequest;
+import com.yunpznr.gabutan.model.auth.register.RegisterResponse;
+import com.yunpznr.gabutan.model.auth.token.RefreshTokenRequest;
+import com.yunpznr.gabutan.model.auth.token.RefreshTokenResponse;
 import com.yunpznr.gabutan.service.auth.AuthServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

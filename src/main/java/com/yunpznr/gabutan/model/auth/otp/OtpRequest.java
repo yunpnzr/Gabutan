@@ -1,4 +1,4 @@
-package com.yunpznr.gabutan.model.user.otp;
+package com.yunpznr.gabutan.model.auth.otp;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

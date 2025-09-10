@@ -1,4 +1,4 @@
-package com.yunpznr.gabutan.model.user.token;
+package com.yunpznr.gabutan.model.auth.login;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RefreshTokenRequest {
-    private String token;
+public class LoginRequest {
+    private String email;
+    private String password;
 }

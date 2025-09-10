@@ -1,4 +1,4 @@
-package com.yunpznr.gabutan.model.user.login;
+package com.yunpznr.gabutan.model.auth.otp;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class LoginRequest {
+public class OtpResponse {
     private String email;
-    private String password;
 }
