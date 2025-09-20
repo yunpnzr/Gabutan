@@ -20,11 +20,28 @@ public class JwtAuthEntryPoint implements AuthenticationEntryPoint {
             throws IOException{
 
         response.setContentType("application/json");
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
+        int status = HttpServletResponse.SC_UNAUTHORIZED;
+        String message;
+
+        switch (authException.getClass().getSimpleName()) {
+            case "BadCredentialsException":
+                status = HttpServletResponse.SC_BAD_REQUEST;
+                message = authException.getMessage().toLowerCase();
+                break;
+            case "UsernameNotFoundException":
+                status = HttpServletResponse.SC_NOT_FOUND;
+                message = authException.getMessage();
+                break;
+            default:
+                message = "Unauthorized";
+        }
+
+        response.setStatus(status);
 
         WebResponse<ErrorResponse> errorResponse = WebResponse.<ErrorResponse>builder()
-                .statusCode(401)
-                .message("Unauthorized, " + authException.getMessage().toLowerCase())
+                .statusCode(status)
+                .message(message)
                 .data(null)
                 .build();
 

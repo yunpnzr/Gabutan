@@ -5,6 +5,7 @@ import jakarta.validation.ConstraintViolationException;
 import org.eclipse.angus.mail.smtp.SMTPAddressFailedException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -63,6 +64,17 @@ public class ErrorController {
         return ResponseEntity.status(400).body(
                 WebResponse.<ErrorResponse>builder()
                         .statusCode(400)
+                        .message(e.getMessage())
+                        .data(null)
+                        .build()
+        );
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<WebResponse<ErrorResponse>> usernameNotFound(UsernameNotFoundException e) {
+        return ResponseEntity.status(404).body(
+                WebResponse.<ErrorResponse>builder()
+                        .statusCode(404)
                         .message(e.getMessage())
                         .data(null)
                         .build()

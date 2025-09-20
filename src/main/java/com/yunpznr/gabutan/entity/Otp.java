@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+//redis
 @KeySpace("otp")
 public class Otp {
     @Id

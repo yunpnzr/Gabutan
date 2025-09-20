@@ -67,8 +67,8 @@ public class User implements UserDetails {
     )
     private Token token;
 
-    public User(String email, String password) {
-        this.email = email;
+    public User(UUID id, String password) {
+        this.id = id;
         this.password = password;
     }
 
@@ -84,7 +84,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return id.toString();
     }
 
     @Override
