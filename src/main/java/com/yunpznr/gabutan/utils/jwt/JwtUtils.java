@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.UUID;
 
 @AllArgsConstructor
 @Component
@@ -27,11 +28,11 @@ public class JwtUtils {
     }
 
     //buat generate token
-    public String generateToken(String username) {
+    public String generateToken(UUID username) {
         Key key = Keys.hmacShaKeyFor(config.getSecret().getBytes());
 
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(username.toString())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + config.getExpiration()))
                 .signWith(key, SignatureAlgorithm.HS256)

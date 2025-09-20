@@ -4,8 +4,11 @@ import com.yunpznr.gabutan.model.user.get.GetUserResponse;
 import com.yunpznr.gabutan.model.user.update.UpdateUserRequest;
 import com.yunpznr.gabutan.model.user.update.UpdateUserResponse;
 
+import java.security.Principal;
+import java.util.UUID;
+
 public interface UserService {
-    GetUserResponse getUser(String email);
+    GetUserResponse getUser(UUID id);
     UpdateUserResponse updateUser(UpdateUserRequest updateUserRequest);
-    void deleteUser(String email);
+    void deleteUser(UUID id);
 }

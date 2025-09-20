@@ -2,7 +2,6 @@ package com.yunpznr.gabutan.service.auth;
 
 import com.yunpznr.gabutan.entity.Token;
 import com.yunpznr.gabutan.entity.User;
-import com.yunpznr.gabutan.model.user.get.GetUserResponse;
 import com.yunpznr.gabutan.model.auth.login.LoginRequest;
 import com.yunpznr.gabutan.model.auth.login.LoginResponse;
 import com.yunpznr.gabutan.model.auth.register.RegisterRequest;
@@ -124,7 +123,7 @@ public class AuthServiceImpl implements AuthService {
 
         Optional<Token> byUser = tokenRepository.findByUser(user);
 
-        String generateToken = jwtUtils.generateToken(user.getEmail());
+        String generateToken = jwtUtils.generateToken(user.getId());
 
         Token token = new Token();
 
@@ -162,27 +161,28 @@ public class AuthServiceImpl implements AuthService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token tidak ditemukan");
         }
 
-        if (!jwtUtils.isTokenExpired(token.getToken())) {
+        if (jwtUtils.isTokenExpired(token.getToken())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token belum expired");
         }
 
         String emailToken = jwtUtils.getUsername(token.getToken());
-        String emailUser = token.getUser().getEmail();
+        UUID userId = token.getUser().getId();
 
-        if (!emailToken.equals(emailUser)) {
+        if (!emailToken.equals(userId.toString())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Token tidak ditemukan");
         }
 
-        String newToken = jwtUtils.generateToken(emailUser);
+        String newToken = jwtUtils.generateToken(userId);
 
         token.setToken(newToken);
         token.setExpiredAt(jwtUtils.getExpiration(newToken));
+
         tokenRepository.save(token);
 
         return RefreshTokenResponse.builder()
-                .email(emailUser)
+                .email(token.getUser().getEmail())
                 .refreshToken(newToken)
-                .expirationDate(jwtUtils.getExpiration(jwtUtils.generateToken(token.getUser().getEmail())))
+                .expirationDate(jwtUtils.getExpiration(newToken))
                 .build();
     }
 }
